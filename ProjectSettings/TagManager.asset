@@ -3,7 +3,27 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - agent
+  - ground
+  - goal
+  - block
+  - wall
+  - key
+  - blockLarge
+  - blockSmall
+  - blockVeryLarge
+  - lock
+  - dragon
+  - portal
+  - tile
+  - purpleAgent
+  - blueAgent
+  - ball
+  - blueGoal
+  - purpleGoal
+  - blueText
+  - purpleText
   layers:
   - Default
   - TransparentFX
