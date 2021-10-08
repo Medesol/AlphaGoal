@@ -1,1 +1,7 @@
 # AlphaGoal
+
+在Scene中创建Canvas对象，设置游戏的宽高比固定为16:9。将Canvas对象的UI Scale Mode改为Scale With Screen Size，并把Reference Resolution设置为1600:900。
+
+在Canvas下创建两个Text对象，在SoccerFieldTwos中加入两个Text的公共对象，将Canvas下的两个Text对象拖入SoccerFieldTwos中，修改SoccerFieldTwos中进球的函数让其进球时相应队伍的Score+1并显示在UI上。
+
+因为只把Text拖入了一个足球场的脚本中，所以运行时其他足球场的脚本会有报错不过不影响。
