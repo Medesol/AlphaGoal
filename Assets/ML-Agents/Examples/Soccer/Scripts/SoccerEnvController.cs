@@ -82,8 +82,12 @@ public class SoccerEnvController : MonoBehaviour
 
     void FixedUpdate()
     {
-        blueText.text = "Blue: " + blueScore;
-        purpleText.text = "Purple: " + purpleScore;
+        if (gameObject.CompareTag("scoreField"))
+        {
+            blueText.text = "Blue: " + blueScore;
+            purpleText.text = "Purple: " + purpleScore;
+        }
+
         m_ResetTimer += 1;
         if (m_ResetTimer >= MaxEnvironmentSteps && MaxEnvironmentSteps > 0)
         {
@@ -111,13 +115,15 @@ public class SoccerEnvController : MonoBehaviour
         {
             m_BlueAgentGroup.AddGroupReward(1 - (float)m_ResetTimer / MaxEnvironmentSteps);
             m_PurpleAgentGroup.AddGroupReward(-1);
-            blueScore++;
+            if (gameObject.CompareTag("scoreField"))
+                blueScore++;
         }
         else
         {
             m_PurpleAgentGroup.AddGroupReward(1 - (float)m_ResetTimer / MaxEnvironmentSteps);
             m_BlueAgentGroup.AddGroupReward(-1);
-            purpleScore++;
+            if (gameObject.CompareTag("scoreField"))
+                purpleScore++;
         }
         m_PurpleAgentGroup.EndGroupEpisode();
         m_BlueAgentGroup.EndGroupEpisode();
