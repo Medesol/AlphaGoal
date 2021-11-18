@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using Unity.MLAgents;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class SoccerEnvController : MonoBehaviour
 {
@@ -16,6 +18,19 @@ public class SoccerEnvController : MonoBehaviour
         [HideInInspector]
         public Rigidbody Rb;
     }
+
+    public Text ScoreText;
+    //public Text PurpleText;
+    private int bluescore = 0;
+    private int purplescore = 0;
+
+    public Text TouchText;
+    private int blueTouch = 0;
+    private int purpleTouch = 0;
+
+    public Text DistanceText;
+    private double blueDis = 0;
+    private double purpleDis = 0;
 
 
     /// <summary>
@@ -48,15 +63,9 @@ public class SoccerEnvController : MonoBehaviour
 
     private int m_ResetTimer;
 
-    public Text blueText;
-    public Text purpleText;
-    private int blueScore = 0;
-    private int purpleScore = 0;
-
     void Start()
     {
-        // blueText = GameObject.FindGameObjectsWithTag("blueText")[0].GetComponent<Text>();
-        // purpleText = GameObject.FindGameObjectsWithTag("purpleText")[0].GetComponent<Text>();
+
         m_SoccerSettings = FindObjectOfType<SoccerSettings>();
         // Initialize TeamManager
         m_BlueAgentGroup = new SimpleMultiAgentGroup();
@@ -82,8 +91,16 @@ public class SoccerEnvController : MonoBehaviour
 
     void FixedUpdate()
     {
-        blueText.text = "Blue: " + blueScore;
-        purpleText.text = "Purple: " + purpleScore;
+        if (gameObject.CompareTag("ScoreField"))
+        {
+            ScoreText.text = "Score - " + bluescore + " : " + purplescore;
+            TouchText.text = "Ball Touch - " + blueTouch + " : " + purpleTouch;
+            DistanceText.text = "Running Distance - " + blueDis + " : " + purpleDis;
+            // ScoreText.text = "Score - Blue " + bluescore + " : " + purplescore + " Purple";
+            // TouchText.text = "Touch - Blue  " + blueTouch + " : " + purpleTouch + " Purple";
+            // DistanceText.text = "Distance - Blue  " + blueDis + " : " + purpleDis + " Purple";
+            // PurpleText.text = purplescore + "  Purple";
+        }
         m_ResetTimer += 1;
         if (m_ResetTimer >= MaxEnvironmentSteps && MaxEnvironmentSteps > 0)
         {
@@ -111,13 +128,15 @@ public class SoccerEnvController : MonoBehaviour
         {
             m_BlueAgentGroup.AddGroupReward(1 - (float)m_ResetTimer / MaxEnvironmentSteps);
             m_PurpleAgentGroup.AddGroupReward(-1);
-            blueScore++;
+            if (gameObject.CompareTag("ScoreField"))
+                bluescore++;
         }
         else
         {
             m_PurpleAgentGroup.AddGroupReward(1 - (float)m_ResetTimer / MaxEnvironmentSteps);
             m_BlueAgentGroup.AddGroupReward(-1);
-            purpleScore++;
+            if (gameObject.CompareTag("ScoreField"))
+                purplescore++;
         }
         m_PurpleAgentGroup.EndGroupEpisode();
         m_BlueAgentGroup.EndGroupEpisode();
@@ -125,6 +144,35 @@ public class SoccerEnvController : MonoBehaviour
 
     }
 
+    public void BallTouched(Team touchedTeam)
+    {
+        if (touchedTeam == Team.Blue)
+        {
+            if (gameObject.CompareTag("ScoreField"))
+                blueTouch++;
+        }
+        else
+        {
+            if (gameObject.CompareTag("ScoreField"))
+                purpleTouch++;
+        }
+    }
+
+    public void runningDis(Team runningTeam)
+    {
+        if (runningTeam == Team.Blue)
+        {
+            if (gameObject.CompareTag("ScoreField"))
+                blueDis += 0.01;
+                blueDis = Math.Round(blueDis, 3);
+        }
+        else
+        {
+            if (gameObject.CompareTag("ScoreField"))
+                purpleDis += 0.01;
+                purpleDis = Math.Round(purpleDis, 3); ;
+        }
+    }
 
     public void ResetScene()
     {
@@ -147,3 +195,4 @@ public class SoccerEnvController : MonoBehaviour
         ResetBall();
     }
 }
+
