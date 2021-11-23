@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
@@ -49,7 +50,10 @@ public class AgentSoccer : Agent
 
     EnvironmentParameters m_ResetParams;
 
+    // 体力相关
     public Slider slider;
+    private float regSpeed = 0.1f; // 体力恢复速度
+    private float decreaseSpeed = 0.02f; // 体力消耗速度
 
     public override void Initialize()
     {
@@ -145,9 +149,13 @@ public class AgentSoccer : Agent
                 break;
         }
 
-        transform.Rotate(rotateDir, Time.deltaTime * 100f * slider.value);
-        agentRb.AddForce(dirToGo * m_SoccerSettings.agentRunSpeed * slider.value,
-            ForceMode.VelocityChange);
+        transform.Rotate(rotateDir, Time.deltaTime * 100f);
+        // 如果还有体力，对施加的力乘一个体力系数
+        if (slider.value > 0f)
+        {
+            agentRb.AddForce(dirToGo * m_SoccerSettings.agentRunSpeed * slider.value,
+                ForceMode.VelocityChange);
+        }
     }
 
     public override void OnActionReceived(ActionBuffers actionBuffers)
@@ -222,4 +230,17 @@ public class AgentSoccer : Agent
         m_BallTouch = m_ResetParams.GetWithDefault("ball_touch", 0);
     }
 
+    private void Update()
+    {
+        Stamina();
+    }
+
+    private void Stamina()
+    {
+        // 让体力稳定恢复但不能超过最大值
+        slider.value = Math.Min(slider.maxValue, slider.value + regSpeed * Time.deltaTime);
+        // 根据当前速度的模消耗体力
+        slider.value = Math.Max(slider.minValue,
+            slider.value - decreaseSpeed * agentRb.velocity.magnitude * Time.deltaTime);
+    }
 }
