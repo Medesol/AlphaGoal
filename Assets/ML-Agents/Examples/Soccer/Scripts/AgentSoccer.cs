@@ -2,6 +2,7 @@ using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Policies;
+using UnityEngine.UI;
 
 public enum Team
 {
@@ -48,9 +49,16 @@ public class AgentSoccer : Agent
 
     EnvironmentParameters m_ResetParams;
 
+    public Slider slider;
+
     public override void Initialize()
     {
         SoccerEnvController envController = GetComponentInParent<SoccerEnvController>();
+        slider = GetComponentInChildren<Slider>();
+        if (slider != null)
+        {
+            slider.value = 1f;
+        }
         if (envController != null)
         {
             m_Existential = 1f / envController.MaxEnvironmentSteps;
@@ -137,8 +145,8 @@ public class AgentSoccer : Agent
                 break;
         }
 
-        transform.Rotate(rotateDir, Time.deltaTime * 100f);
-        agentRb.AddForce(dirToGo * m_SoccerSettings.agentRunSpeed,
+        transform.Rotate(rotateDir, Time.deltaTime * 100f * slider.value);
+        agentRb.AddForce(dirToGo * m_SoccerSettings.agentRunSpeed * slider.value,
             ForceMode.VelocityChange);
     }
 
