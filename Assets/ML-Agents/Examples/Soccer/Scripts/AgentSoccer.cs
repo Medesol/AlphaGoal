@@ -54,11 +54,13 @@ public class AgentSoccer : Agent
     public Slider slider;
     private float regSpeed = 0.1f; // 体力恢复速度
     private float decreaseSpeed = 0.02f; // 体力消耗速度
+    private Image fill;
 
     public override void Initialize()
     {
         SoccerEnvController envController = GetComponentInParent<SoccerEnvController>();
         slider = GetComponentInChildren<Slider>();
+        fill = slider.transform.GetChild(1).GetChild(0).GetComponent<Image>();
         if (slider != null)
         {
             slider.value = 1f;
@@ -242,5 +244,17 @@ public class AgentSoccer : Agent
         // 根据当前速度的模消耗体力
         slider.value = Math.Max(slider.minValue,
             slider.value - decreaseSpeed * agentRb.velocity.magnitude * Time.deltaTime);
+        float staminaRatio = slider.value / slider.maxValue;
+        if (staminaRatio > 0.3f && staminaRatio < 0.6f)
+        {
+            fill.color = Color.yellow;
+        } else if (staminaRatio > 0f && staminaRatio < 0.3f)
+        {
+            fill.color = Color.red;
+        }
+        else
+        {
+            fill.color = Color.green;
+        }
     }
 }
