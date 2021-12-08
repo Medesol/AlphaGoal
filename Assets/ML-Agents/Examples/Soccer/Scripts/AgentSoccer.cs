@@ -52,7 +52,7 @@ public class AgentSoccer : Agent
 
     // 体力相关
     public Slider slider;
-    private float regSpeed = 0.1f; // 体力恢复速度
+    private float regSpeed = 0.08f; // 体力恢复速度
     private float decreaseSpeed = 0.02f; // 体力消耗速度
     private Image fill;
 
