@@ -4,5 +4,17 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/ML-Agents/Examples/Soccer/Scenes/Menu.unity
+    guid: 69a730f8c741f4ee9b1576cadfe2a328
+  - enabled: 1
+    path: Assets/ML-Agents/Examples/Soccer/Scenes/Baby.unity
+    guid: b6d64480fcc584f9f8f6f0cd877e4180
+  - enabled: 1
+    path: Assets/ML-Agents/Examples/Soccer/Scenes/Newbie.unity
+    guid: a515b8e6d048045eb8a921dc5b3f6620
+  - enabled: 1
+    path: Assets/ML-Agents/Examples/Soccer/Scenes/Veteran.unity
+    guid: b252bdf36b98649fe94664928fbcf708
   m_configObjects: {}

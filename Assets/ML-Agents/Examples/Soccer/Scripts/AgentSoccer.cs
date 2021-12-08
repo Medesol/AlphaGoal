@@ -41,6 +41,12 @@ public class AgentSoccer : Agent
     float m_ForwardSpeed;
 
 
+    public string purpleGoalTag; //will be used to check if collided with purple goal
+    public string blueGoalTag; //will be used to check if collided with blue goal
+    public string purpleAgentTag; //will be used to check if collided with purple goal
+    public string blueAgentTag; //will be used to check if collided with blue goal
+
+
     [HideInInspector]
     public Rigidbody agentRb;
     SoccerSettings m_SoccerSettings;
@@ -49,12 +55,13 @@ public class AgentSoccer : Agent
     public float rotSign;
 
     EnvironmentParameters m_ResetParams;
-
+    
     // 体力相关
     public Slider slider;
     private float regSpeed = 0.08f; // 体力恢复速度
     private float decreaseSpeed = 0.02f; // 体力消耗速度
     private Image fill;
+
 
     public override void Initialize()
     {
@@ -65,6 +72,7 @@ public class AgentSoccer : Agent
         {
             slider.value = 1f;
         }
+
         if (envController != null)
         {
             m_Existential = 1f / envController.MaxEnvironmentSteps;
@@ -111,6 +119,7 @@ public class AgentSoccer : Agent
 
     public void MoveAgent(ActionSegment<int> act)
     {
+        SoccerEnvController envController = GetComponentInParent<SoccerEnvController>();
         var dirToGo = Vector3.zero;
         var rotateDir = Vector3.zero;
 
@@ -125,9 +134,25 @@ public class AgentSoccer : Agent
             case 1:
                 dirToGo = transform.forward * m_ForwardSpeed;
                 m_KickPower = 1f;
+                if (team == Team.Blue)
+                {
+                    envController.runningDis(Team.Blue);
+                }
+                else
+                {
+                    envController.runningDis(Team.Purple);
+                }
                 break;
             case 2:
                 dirToGo = transform.forward * -m_ForwardSpeed;
+                if (team == Team.Blue)
+                {
+                    envController.runningDis(Team.Blue);
+                }
+                else
+                {
+                    envController.runningDis(Team.Purple);
+                }
                 break;
         }
 
@@ -135,9 +160,25 @@ public class AgentSoccer : Agent
         {
             case 1:
                 dirToGo = transform.right * m_LateralSpeed;
+                if (team == Team.Blue)
+                {
+                    envController.runningDis(Team.Blue);
+                }
+                else
+                {
+                    envController.runningDis(Team.Purple);
+                }
                 break;
             case 2:
                 dirToGo = transform.right * -m_LateralSpeed;
+                if (team == Team.Blue)
+                {
+                    envController.runningDis(Team.Blue);
+                }
+                else
+                {
+                    envController.runningDis(Team.Purple);
+                }
                 break;
         }
 
@@ -152,6 +193,8 @@ public class AgentSoccer : Agent
         }
 
         transform.Rotate(rotateDir, Time.deltaTime * 100f);
+        // agentRb.AddForce(dirToGo * m_SoccerSettings.agentRunSpeed,
+        //     ForceMode.VelocityChange);
         // 如果还有体力，对施加的力乘一个体力系数
         if (slider.value > 0f)
         {
@@ -179,15 +222,32 @@ public class AgentSoccer : Agent
 
     public override void Heuristic(in ActionBuffers actionsOut)
     {
+        SoccerEnvController envController = GetComponentInParent<SoccerEnvController>();
         var discreteActionsOut = actionsOut.DiscreteActions;
         //forward
         if (Input.GetKey(KeyCode.W))
         {
             discreteActionsOut[0] = 1;
+            if (team == Team.Blue)
+            {
+                envController.runningDis(Team.Blue);
+            }
+            else
+            {
+                envController.runningDis(Team.Purple);
+            }
         }
         if (Input.GetKey(KeyCode.S))
         {
             discreteActionsOut[0] = 2;
+            if (team == Team.Blue)
+            {
+                envController.runningDis(Team.Blue);
+            }
+            else
+            {
+                envController.runningDis(Team.Purple);
+            }
         }
         //rotate
         if (Input.GetKey(KeyCode.A))
@@ -202,11 +262,28 @@ public class AgentSoccer : Agent
         if (Input.GetKey(KeyCode.E))
         {
             discreteActionsOut[1] = 1;
+            if (team == Team.Blue)
+            {
+                envController.runningDis(Team.Blue);
+            }
+            else
+            {
+                envController.runningDis(Team.Purple);
+            }
         }
         if (Input.GetKey(KeyCode.Q))
         {
             discreteActionsOut[1] = 2;
+            if (team == Team.Blue)
+            {
+                envController.runningDis(Team.Blue);
+            }
+            else
+            {
+                envController.runningDis(Team.Purple);
+            }
         }
+
     }
     /// <summary>
     /// Used to provide a "kick" to the ball.
@@ -231,7 +308,7 @@ public class AgentSoccer : Agent
     {
         m_BallTouch = m_ResetParams.GetWithDefault("ball_touch", 0);
     }
-
+    
     private void Update()
     {
         Stamina();
@@ -257,4 +334,6 @@ public class AgentSoccer : Agent
             fill.color = Color.green;
         }
     }
+
+
 }
